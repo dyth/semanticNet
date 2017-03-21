@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """from English sentences, use denotational semantics parser, then extract relations"""
 import os, subprocess
-import objectPhrase
+from objectPhrase import objectPhrase
 from subprocess import Popen, PIPE
 
 
@@ -24,36 +24,21 @@ def trimDown(word):
 
 
 # get parse tree from Parsey McParseFace
-parse = getParseTree("Marvellously, I suddenly saw the man with glasses who bought the cute rabbit")[1:][:-1]
+parse = getParseTree("Marvellously, I suddenly saw the man with glasses and with hair who bought the cute rabbit")[1:][:-1]
 
 print parse
 
-subj = ''
-rel = ''
-obj = ''
-previous = None
+sentence = objectPhrase(parse)
 
-for phrase in parse.split("\n +-- "):
-    print phrase
-    splice = phrase.split(' ')
-    if (splice[1] == 'VBD' or 'adv' in splice[2]):
-        rel += phrase + ' '
-    elif ('nsubj' in splice[2]):
-        subj += phrase + ' '
-    elif ('dobj' in splice[2]):
-        obj += phrase + ' '
-    elif ('prep' in splice[2]):
-        if ('dobj' in previous[2]):
-            obj += '\n' + phrase + ' '
-        elif ('nsubj' in splice[2]):
-            subj += '\n' + phrase + ' '
-    previous = splice
+print '\n' + sentence.subj
+print '\n' + sentence.rel
+print '\n' + sentence.obj
 
-print subj
-print rel
-print obj    
-    
 quit()
+
+
+
+
 
 
 # split up parse tree into nested list and do analysis
